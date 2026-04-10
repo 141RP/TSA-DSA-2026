@@ -77,9 +77,9 @@ def save(fig, name):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SLIDE 1 — DEMOGRAPHIC PORTRAIT
+# SLIDE 1 - DEMOGRAPHIC PORTRAIT
 # ══════════════════════════════════════════════════════════════════════════════
-print("Slide 1 — demographic portrait")
+print("Slide 1 - demographic portrait")
 fig = plt.figure(figsize=(16, 9), facecolor=BG)
 slide_header(fig, "Who are these students...",
              "3,084 high-school students across Florida, California & Texas")
@@ -88,7 +88,7 @@ gs = gridspec.GridSpec(2, 3, figure=fig,
                        left=0.06, right=0.97, top=0.87, bottom=0.08,
                        hspace=0.52, wspace=0.38)
 
-# — Age distribution (area)
+# - Age distribution (area)
 ax1 = fig.add_subplot(gs[0, 0])
 age_counts = df["age"].value_counts().sort_index()
 ax1.fill_between(age_counts.index, age_counts.values,
@@ -98,13 +98,13 @@ ax1.plot(age_counts.index, age_counts.values,
 for x, y in zip(age_counts.index, age_counts.values):
     ax1.text(x, y+6, str(y), ha="center", fontsize=8.5, color=THISTLE)
 ax1.set_xticks(age_counts.index)
-ax1.set_xlabel("Age")
+ax1.set_xlabel("Student age (years)")
 ax1.set_ylim(0, 750)
 ax1.yaxis.grid(True); ax1.set_axisbelow(True)
-label(ax1, "Age distribution")
-subtitle(ax1, "Roughly equal cohorts across 15–19")
+label(ax1, "Student count by age")
+subtitle(ax1, "Number of students in each age group from 15 to 19")
 
-# — Race breakdown (horizontal bar)
+# - Race breakdown (horizontal bar)
 ax2 = fig.add_subplot(gs[0, 1])
 race_counts = df["race"].value_counts()
 bars = ax2.barh(race_counts.index, race_counts.values,
@@ -112,12 +112,12 @@ bars = ax2.barh(race_counts.index, race_counts.values,
 for bar in bars:
     ax2.text(bar.get_width()+5, bar.get_y()+bar.get_height()/2,
              f"{bar.get_width():,}", va="center", fontsize=8.5, color=MUTED)
-ax2.set_xlabel("Students")
+ax2.set_xlabel("Number of students")
 ax2.xaxis.grid(True); ax2.set_axisbelow(True)
-label(ax2, "Racial composition")
-subtitle(ax2, "Five groups, evenly represented")
+label(ax2, "Student count by race")
+subtitle(ax2, "Comparison of enrollment across the five race groups")
 
-# — State breakdown (donut)
+# - State breakdown (donut)
 ax3 = fig.add_subplot(gs[0, 2])
 state_counts = df["state"].value_counts()
 wedges, texts, autotexts = ax3.pie(
@@ -130,10 +130,10 @@ wedges, texts, autotexts = ax3.pie(
 )
 for at in autotexts:
     at.set_fontsize(8.5); at.set_color(BLUSH)
-label(ax3, "State breakdown", x=0.5, ha="center")
-subtitle(ax3, "Three-state coverage", x=0.5)
+label(ax3, "Share of students by state", x=0.5, ha="center")
+subtitle(ax3, "Percent of the dataset from Florida, California, and Texas", x=0.5)
 
-# — Urban vs Rural (stacked bar by state)
+# - Urban vs Rural (stacked bar by state)
 ax4 = fig.add_subplot(gs[1, 0])
 ur = df.groupby(["state","address"]).size().unstack(fill_value=0)
 states = ur.index.tolist()
@@ -145,10 +145,10 @@ ax4.bar(x, r_vals, bottom=u_vals, color=SLATE, alpha=0.88, label="Rural", width=
 ax4.set_xticks(x); ax4.set_xticklabels(states, fontsize=9)
 ax4.legend(loc="upper right")
 ax4.yaxis.grid(True); ax4.set_axisbelow(True)
-label(ax4, "Urban vs rural by state")
-subtitle(ax4, "Near 50/50 split in all three states")
+label(ax4, "Urban and rural students by state")
+subtitle(ax4, "Student counts for urban and rural groups within each state")
 
-# — Gender split (simple pill bars)
+# - Gender split (simple pill bars)
 ax5 = fig.add_subplot(gs[1, 1])
 sex_counts = df["sex"].value_counts()
 colors_sex = [THISTLE, LILAC]
@@ -159,10 +159,10 @@ for bar in bars5:
              f"{bar.get_height():,}", ha="center", fontsize=9, color=MUTED)
 ax5.set_ylim(0, 1900)
 ax5.yaxis.grid(True); ax5.set_axisbelow(True)
-label(ax5, "Sex breakdown")
-subtitle(ax5, "1,548 female · 1,536 male")
+label(ax5, "Student count by sex")
+subtitle(ax5, "1,548 female students and 1,536 male students")
 
-# — Internet access + parental involvement
+# - Internet access + parental involvement
 ax6 = fig.add_subplot(gs[1, 2])
 pi = df["parental_involvement"].value_counts()[["low","medium","high"]]
 inet = df["internet"].value_counts()
@@ -174,21 +174,21 @@ ax6.axvline(df.shape[0]/2, color=MUTED, linewidth=0.8, linestyle="--", alpha=0.5
 for bar in bars6:
     ax6.text(bar.get_width()+8, bar.get_y()+bar.get_height()/2,
              f"{bar.get_width():,}", va="center", fontsize=8.5, color=MUTED)
-ax6.set_xlabel("Students")
+ax6.set_xlabel("Number of students")
 ax6.xaxis.grid(True); ax6.set_axisbelow(True)
-label(ax6, "Key social factors")
-subtitle(ax6, "Parental involvement & internet access")
+label(ax6, "Parental involvement and internet access")
+subtitle(ax6, "Student counts by involvement level and home internet access")
 
 save(fig, "slide1_demographics.png")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SLIDE 2 — OUTCOME HEATMAP BY SUBGROUP
+# SLIDE 2 - OUTCOME HEATMAP BY SUBGROUP
 # ══════════════════════════════════════════════════════════════════════════════
-print("Slide 2 — outcome heatmap")
+print("Slide 2 - outcome heatmap")
 fig = plt.figure(figsize=(16, 9), facecolor=BG)
 slide_header(fig, "Scanning the full picture",
-             "Average outcomes by race × location — cells show deviation from overall mean (z-score)")
+             "Average outcomes by race × location; cells show deviation from the overall mean (z-score)")
 
 ax = fig.add_subplot(111)
 fig.subplots_adjust(left=0.18, right=0.88, top=0.85, bottom=0.12)
@@ -225,7 +225,7 @@ sns.heatmap(heat_z, ax=ax, cmap=cmap_custom,
             annot=heat_df.round(1), fmt="g",
             annot_kws={"size": 9, "color": BLUSH},
             linewidths=0.8, linecolor=BG,
-            cbar_kws={"label": "← worse than avg  |  better than avg →",
+            cbar_kws={"label": "Lower than overall average  |  Higher than overall average",
                       "shrink": 0.7})
 ax.set_xlabel("")
 ax.set_ylabel("")
@@ -236,7 +236,7 @@ cbar.ax.yaxis.label.set_color(MUTED)
 cbar.ax.yaxis.label.set_fontsize(8)
 cbar.ax.tick_params(colors=MUTED, labelsize=8)
 
-fig.text(0.88, 0.5, "Suspensions & failures\nare inverted so pink\nalways = better outcome",
+fig.text(0.88, 0.5, "Suspension and failure scores\nare inverted so the higher-value color\nalways means a better outcome",
          fontsize=8, color=MUTED, va="center", ha="left",
          transform=fig.transFigure)
 
@@ -244,12 +244,12 @@ save(fig, "slide2_heatmap.png")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SLIDE 3 — SCORE GAPS BY LOCATION + AGE
+# SLIDE 3 - SCORE GAPS BY LOCATION + AGE
 # ══════════════════════════════════════════════════════════════════════════════
-print("Slide 3 — score gaps")
+print("Slide 3 - score gaps")
 fig = plt.figure(figsize=(16, 9), facecolor=BG)
 slide_header(fig, "Where the score gaps live",
-             "Test scores across race, location, state, and age — each dimension tells a different part of the story")
+             "Test scores across race, location, state, and age; each dimension shows a different part of the story")
 
 gs = gridspec.GridSpec(1, 3, figure=fig,
                        left=0.06, right=0.97, top=0.85, bottom=0.10,
@@ -259,7 +259,7 @@ subjects = ["math_score","reading_score","writing_score"]
 sub_labels = ["Math","Reading","Writing"]
 sub_colors = [THISTLE, LILAC, SLATE]
 
-# — Panel A: scores by race (grouped bar)
+# - Panel A: scores by race (grouped bar)
 ax1 = fig.add_subplot(gs[0])
 race_scores = df.groupby("race")[subjects].mean()
 races = race_scores.index.tolist()
@@ -273,14 +273,14 @@ ax1.axhline(overall, color=BLUSH, linewidth=1.2, linestyle="--",
             alpha=0.6, label=f"Overall mean ({overall:.1f})")
 ax1.set_xticks(x)
 ax1.set_xticklabels(races, fontsize=8.5, rotation=20, ha="right")
-ax1.set_ylabel("Avg score (0–100)")
+ax1.set_ylabel("Average score out of 100")
 ax1.set_ylim(0, 75)
 ax1.legend(fontsize=8)
 ax1.yaxis.grid(True); ax1.set_axisbelow(True)
-label(ax1, "A  ·  Scores by race")
-subtitle(ax1, "Math / Reading / Writing")
+label(ax1, "A. Average subject scores by race")
+subtitle(ax1, "Mean math, reading, and writing scores for each race group")
 
-# — Panel B: urban vs rural × state (dot plot)
+# - Panel B: urban vs rural × state (dot plot)
 ax2 = fig.add_subplot(gs[1])
 grp = df.groupby(["state","location"])["avg_score"].mean().reset_index()
 states = grp["state"].unique()
@@ -294,7 +294,7 @@ for _, row in grp.iterrows():
     ax2.scatter(row["avg_score"], y, marker=m, color=c, s=100, zorder=4)
     ax2.text(row["avg_score"], y+0.12, f"{row['avg_score']:.1f}",
              ha="center", fontsize=8.5, color=c)
-# connect urban–rural per state
+# connect urban-rural per state
 for state, yd in y_pos.items():
     sub = grp[grp["state"]==state].set_index("location")["avg_score"]
     if "Urban" in sub and "Rural" in sub:
@@ -302,16 +302,16 @@ for state, yd in y_pos.items():
                  color=MUTED, linewidth=1.2, alpha=0.5, zorder=3)
 ax2.set_yticks(list(y_pos.values()))
 ax2.set_yticklabels(list(y_pos.keys()), fontsize=9)
-ax2.set_xlabel("Avg score")
+ax2.set_xlabel("Average overall score")
 ax2.set_xlim(44, 58)
 ax2.xaxis.grid(True); ax2.set_axisbelow(True)
 legend_els = [mpatches.Patch(color=THISTLE,label="Urban"),
               mpatches.Patch(color=SLATE,  label="Rural")]
 ax2.legend(handles=legend_els, fontsize=8)
-label(ax2, "B  ·  State × location")
-subtitle(ax2, "Urban vs rural gap by state")
+label(ax2, "B. Urban-rural score gap by state")
+subtitle(ax2, "Average overall score for urban and rural students in each state")
 
-# — Panel C: slope chart — avg score by age
+# - Panel C: slope chart - avg score by age
 ax3 = fig.add_subplot(gs[2])
 age_race = df.groupby(["age","race"])["avg_score"].mean().reset_index()
 races_plot = df["race"].unique()
@@ -326,28 +326,28 @@ for i, race in enumerate(races_plot):
              race, fontsize=7.5, color=CAT5[i], va="center")
 ax3.set_xticks([15,16,17,18,19])
 ax3.set_xlabel("Student age")
-ax3.set_ylabel("Avg score")
+ax3.set_ylabel("Average overall score")
 ax3.set_xlim(14.8, 20.2)
 ax3.yaxis.grid(True); ax3.set_axisbelow(True)
-label(ax3, "C  ·  Age trajectories")
-subtitle(ax3, "Score trend across 15–19 by race")
+label(ax3, "C. Score trends by age and race")
+subtitle(ax3, "Average score from ages 15 to 19 for each race group")
 
 save(fig, "slide3_score_gaps.png")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SLIDE 4 — DISCIPLINE & ATTENDANCE DEEP DIVE
+# SLIDE 4 - DISCIPLINE & ATTENDANCE DEEP DIVE
 # ══════════════════════════════════════════════════════════════════════════════
-print("Slide 4 — discipline & attendance")
+print("Slide 4 - discipline & attendance")
 fig = plt.figure(figsize=(16, 9), facecolor=BG)
-slide_header(fig, "Discipline & attendance — where inequity compounds",
+slide_header(fig, "Discipline & attendance - where inequity compounds",
              "Suspension rates, absences, and attendance gaps broken down by race, state, and location")
 
 gs = gridspec.GridSpec(2, 2, figure=fig,
                        left=0.07, right=0.97, top=0.85, bottom=0.09,
                        hspace=0.48, wspace=0.38)
 
-# — Panel A: suspension rate by race (diverging from mean)
+# - Panel A: suspension rate by race (diverging from mean)
 ax1 = fig.add_subplot(gs[0, 0])
 race_susp = df.groupby("race")["suspensions"].mean().sort_values()
 grand_mean = df["suspensions"].mean()
@@ -361,12 +361,12 @@ for bar, val in zip(bars, diffs.values):
              bar.get_y()+bar.get_height()/2,
              f"{val:+.2f}", va="center",
              ha="left" if val>=0 else "right", fontsize=8.5, color=BLUSH)
-ax1.set_xlabel(f"Avg suspensions vs mean ({grand_mean:.2f})")
+ax1.set_xlabel(f"Difference from overall average suspensions ({grand_mean:.2f})")
 ax1.xaxis.grid(True); ax1.set_axisbelow(True)
-label(ax1, "A  ·  Suspension gap by race")
-subtitle(ax1, "Deviation from overall average")
+label(ax1, "A. Suspension gap by race")
+subtitle(ax1, "Average suspensions for each race group relative to the overall mean")
 
-# — Panel B: avg absences by state × location (grouped)
+# - Panel B: avg absences by state × location (grouped)
 ax2 = fig.add_subplot(gs[0, 1])
 abs_grp = df.groupby(["state","location"])["absences"].mean().unstack()
 states = abs_grp.index.tolist()
@@ -376,13 +376,13 @@ ax2.bar(x-0.18, abs_grp["Urban"].values, width=0.33,
 ax2.bar(x+0.18, abs_grp["Rural"].values, width=0.33,
         color=SLATE, alpha=0.88, label="Rural")
 ax2.set_xticks(x); ax2.set_xticklabels(states, fontsize=9)
-ax2.set_ylabel("Avg absences (days)")
+ax2.set_ylabel("Average absences (days)")
 ax2.legend(fontsize=8)
 ax2.yaxis.grid(True); ax2.set_axisbelow(True)
-label(ax2, "B  ·  Absences by state & location")
-subtitle(ax2, "Urban vs rural differences within each state")
+label(ax2, "B. Average absences by state and location")
+subtitle(ax2, "Urban and rural attendance gaps within each state")
 
-# — Panel C: attendance distribution — area by age group
+# - Panel C: attendance distribution - area by age group
 ax3 = fig.add_subplot(gs[1, 0])
 bins = np.linspace(60, 100, 28)
 centers = (bins[:-1]+bins[1:])/2
@@ -397,10 +397,10 @@ ax3.set_xlabel("Attendance rate (%)")
 ax3.set_ylabel("Density")
 ax3.legend(title="Age", fontsize=8, title_fontsize=8)
 ax3.yaxis.grid(True); ax3.set_axisbelow(True)
-label(ax3, "C  ·  Attendance by age")
-subtitle(ax3, "Distribution shape across age cohorts")
+label(ax3, "C. Attendance-rate distribution by age")
+subtitle(ax3, "How attendance rates are spread across each age cohort")
 
-# — Panel D: expulsion rate by race × state bubble
+# - Panel D: expulsion rate by race × state bubble
 ax4 = fig.add_subplot(gs[1, 1])
 bubble = df.groupby(["race","state"]).agg(
     susp_mean=("suspensions","mean"),
@@ -427,22 +427,22 @@ leg1 = ax4.legend(handles=race_patches, fontsize=7.5,
 ax4.add_artist(leg1)
 ax4.legend(handles=state_lines, fontsize=7.5,
            loc="lower right", title="State", title_fontsize=7.5)
-ax4.set_xlabel("Avg suspensions")
-ax4.set_ylabel("Avg attendance (%)")
+ax4.set_xlabel("Average suspensions")
+ax4.set_ylabel("Average attendance rate (%)")
 ax4.xaxis.grid(True); ax4.yaxis.grid(True); ax4.set_axisbelow(True)
-label(ax4, "D  ·  Suspensions vs attendance")
-subtitle(ax4, "Each bubble = race × state group (size = n)")
+label(ax4, "D. Suspensions versus attendance by group")
+subtitle(ax4, "Each bubble represents one race-state group; bubble size shows student count")
 
 save(fig, "slide4_discipline.png")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SLIDE 5 — FEATURE IMPORTANCE
+# SLIDE 5 - FEATURE IMPORTANCE
 # ══════════════════════════════════════════════════════════════════════════════
-print("Slide 5 — feature importance")
+print("Slide 5 - feature importance")
 fig = plt.figure(figsize=(16, 9), facecolor=BG)
 slide_header(fig, "What actually drives academic outcomes?",
-             "Random forest feature importance + Pearson correlations with each score type")
+             "Random forest feature importance plus Pearson correlations with each score type")
 
 gs = gridspec.GridSpec(1, 2, figure=fig,
                        left=0.06, right=0.97, top=0.85, bottom=0.09,
@@ -482,7 +482,7 @@ human_labels = {
     "teacher_support":"Teacher support","parental_involvement":"Parental involvement",
 }
 
-# — Panel A: importance bar
+# - Panel A: importance bar
 ax1 = fig.add_subplot(gs[0])
 q75 = importances.quantile(0.75)
 q40 = importances.quantile(0.40)
@@ -502,10 +502,10 @@ patches = [mpatches.Patch(color=THISTLE,label="High (top 25%)"),
            mpatches.Patch(color=LILAC,  label="Medium"),
            mpatches.Patch(color=SLATE,  label="Low")]
 ax1.legend(handles=patches, fontsize=8, loc="lower right")
-label(ax1, "A  ·  Feature importance ranking")
-subtitle(ax1, "Predicting average test score")
+label(ax1, "A. Top predictors of average score")
+subtitle(ax1, "Random forest feature importance for predicting overall test performance")
 
-# — Panel B: correlation heatmap top 10 vs score types
+# - Panel B: correlation heatmap top 10 vs score types
 ax2 = fig.add_subplot(gs[1])
 top10 = importances.tail(10).index.tolist()
 corr_cols = top10 + ["math_score","reading_score","writing_score","attendance_rate"]
@@ -528,18 +528,18 @@ ax2.tick_params(axis="y", labelsize=8.5, colors=MUTED)
 cbar2 = ax2.collections[0].colorbar
 cbar2.ax.tick_params(colors=MUTED, labelsize=8)
 cbar2.ax.yaxis.label.set_color(MUTED)
-label(ax2, "B  ·  Correlation with outcomes")
-subtitle(ax2, "Top 10 features vs each outcome type")
+label(ax2, "B. Correlation of top features with outcomes")
+subtitle(ax2, "Pearson correlation between the top 10 features and each outcome measure")
 
 save(fig, "slide5_feature_importance.png")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SLIDE 6 — INTERVENTION GAP
+# SLIDE 6 - INTERVENTION GAP
 # ══════════════════════════════════════════════════════════════════════════════
-print("Slide 6 — intervention gap")
+print("Slide 6 - intervention gap")
 fig = plt.figure(figsize=(16, 9), facecolor=BG)
-slide_header(fig, "The intervention gap — high risk, no support",
+slide_header(fig, "The intervention gap - high risk, no support",
              "Students with 3+ failures or 2+ suspensions who receive neither counseling nor teacher support")
 
 gs = gridspec.GridSpec(1, 3, figure=fig,
@@ -550,7 +550,7 @@ df["at_risk"]    = ((df["failures"]>=3)|(df["suspensions"]>=2)).astype(int)
 df["no_support"] = ((df["counseling"]=="no")&(df["teacher_support"]=="no")).astype(int)
 df["gap"]        = (df["at_risk"] & df["no_support"]).astype(int)
 
-# — Panel A: gap % by race
+# - Panel A: gap % by race
 ax1 = fig.add_subplot(gs[0])
 race_gap = df.groupby("race").agg(gap_pct=("gap","mean"),
                                    at_risk_pct=("at_risk","mean")).reset_index()
@@ -562,13 +562,13 @@ ax1.bar(x, race_gap["gap_pct"]*100, color=THISTLE, alpha=0.90,
         label="At-risk + no support", width=0.5)
 ax1.set_xticks(x)
 ax1.set_xticklabels(race_gap["race"], rotation=18, ha="right", fontsize=8.5)
-ax1.set_ylabel("% of students")
+ax1.set_ylabel("Percent of students")
 ax1.legend(fontsize=8)
 ax1.yaxis.grid(True); ax1.set_axisbelow(True)
-label(ax1, "A  ·  Gap by race")
-subtitle(ax1, "Thistle = unsupported at-risk students")
+label(ax1, "A. Intervention gap by race")
+subtitle(ax1, "Highlighted bars show at-risk students who receive no support")
 
-# — Panel B: gap % by state × location
+# - Panel B: gap % by state × location
 ax2 = fig.add_subplot(gs[1])
 sl_gap = df.groupby(["state","location"])["gap"].mean().unstack()*100
 states = sl_gap.index.tolist()
@@ -581,13 +581,13 @@ for i, (u, r) in enumerate(zip(sl_gap["Urban"].values, sl_gap["Rural"].values)):
     ax2.text(i-0.18, u+0.3, f"{u:.0f}%", ha="center", fontsize=8, color=THISTLE)
     ax2.text(i+0.18, r+0.3, f"{r:.0f}%", ha="center", fontsize=8, color=MUTED)
 ax2.set_xticks(x); ax2.set_xticklabels(states, fontsize=9)
-ax2.set_ylabel("% at-risk & unsupported")
+ax2.set_ylabel("Percent of students who are at risk and unsupported")
 ax2.legend(fontsize=8)
 ax2.yaxis.grid(True); ax2.set_axisbelow(True)
-label(ax2, "B  ·  Gap by state & location")
-subtitle(ax2, "Where are students falling through?")
+label(ax2, "B. Intervention gap by state and location")
+subtitle(ax2, "Comparison of unsupported at-risk students across states and locations")
 
-# — Panel C: support receipt heatmap (failures × suspensions)
+# - Panel C: support receipt heatmap (failures × suspensions)
 ax3 = fig.add_subplot(gs[2])
 pivot = df.groupby(["failures","suspensions"])["gap"].mean()*100
 pivot_m = pivot.unstack(fill_value=0)
@@ -598,15 +598,15 @@ sns.heatmap(pivot_m, ax=ax3, cmap=gap_cmap,
             annot=True, fmt=".0f",
             annot_kws={"size":10,"color":BLUSH,"weight":"bold"},
             linewidths=0.6, linecolor=BG,
-            cbar_kws={"label":"% unsupported at-risk","shrink":0.75})
+            cbar_kws={"label":"Percent of at-risk students without support","shrink":0.75})
 ax3.set_xlabel("Suspensions")
 ax3.set_ylabel("Failures")
 ax3.tick_params(axis="both", labelsize=9, colors=MUTED)
 cbar3 = ax3.collections[0].colorbar
 cbar3.ax.tick_params(colors=MUTED, labelsize=8)
 cbar3.ax.yaxis.label.set_color(MUTED)
-label(ax3, "C  ·  Risk profile matrix")
-subtitle(ax3, "% with no support at each failure × suspension level")
+label(ax3, "C. Risk profile by failures and suspensions")
+subtitle(ax3, "Percent without support at each failures-by-suspensions combination")
 
 save(fig, "slide6_intervention_gap.png")
 
